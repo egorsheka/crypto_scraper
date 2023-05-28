@@ -22,6 +22,8 @@ public class CryptoScrapper {
 
     private final static String DEBANK_MAIN_URL = "https://debank.com/profile/";
     private final static String INPUT_FILE_NAME = "codes.txt";
+    private final static String OUTPUT_FILE_NAME = "result.txt";
+    private final static String BALANCE_XPATH_VALUE = "//div[@class='HeaderInfo_totalAssetInner__1mOQs HeaderInfo_curveEnable__3Q3u3']";
 
     public static void main(String[] args) throws InterruptedException {
         ChromeDriver chromeDriver = setupChromeDriver();
@@ -41,7 +43,7 @@ public class CryptoScrapper {
 
             System.out.println("Processing URL: " + url);
 
-            WebElement element = waitingDriver.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='HeaderInfo_totalAssetInner__1mOQs HeaderInfo_curveEnable__3Q3u3']")));
+            WebElement element = waitingDriver.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(BALANCE_XPATH_VALUE)));
             String value = element.getText();
 
             System.out.print("\nValue is " + value);
@@ -51,7 +53,7 @@ public class CryptoScrapper {
                 System.out.println(". So, if value = 0, trying again...");
 
                 Thread.sleep(7000);
-                element = waitingDriver.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='HeaderInfo_totalAssetInner__1mOQs HeaderInfo_curveEnable__3Q3u3']")));
+                element = waitingDriver.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(BALANCE_XPATH_VALUE)));
                 value = element.getText();
 
                 System.out.println("Value is " + value);
@@ -67,7 +69,7 @@ public class CryptoScrapper {
         System.out.println("\n==================================================");
         System.out.println("Starting writing data to file ...");
 
-        try (FileWriter fileWriter = new FileWriter("result.txt");
+        try (FileWriter fileWriter = new FileWriter(OUTPUT_FILE_NAME);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 
             for (Pair pair : pairList) {
